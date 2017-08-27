@@ -1,0 +1,27 @@
+.form-wrap input {
+    width: 87%;
+    display: block;
+    padding: 5px 15px;
+    margin: 15px auto;
+    border-radius: 4px;
+    border-color: lightblue;
+    outline: none;
+}
+
+.form-wrap {
+    display: block;
+    margin: 0 auto;
+    width: 320px;
+}
+
+.form-wrap button {
+    display: block;
+    width: 80%;
+    padding: 5px 10px;
+    margin: 0 auto;
+    border: 1px solid lightseagreen;
+    color: royalblue;
+    background: white;
+    font-size: 16px;
+    font-weight: 600;
+}

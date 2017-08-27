@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>Форма связи</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/jquery-ui.min.css">
+</head>
+<body>
+	
+	<div class="wrapper">
+		<div id="app" class="form-wrap">
+
+			<input type="text" id="datepicker" placeholder="Дата заезда" readonly name="inn" onchange="data_change(this.name, this.value)">
+			<input type="text" id="datepicker1" placeholder="Дата выезда" readonly name="out" onchange="data_change(this.name, this.value)">
+			<input type="text" placeholder="Имя" name="nam" onchange="data_change(this.name, this.value)">
+			<input type="text" id="phone" placeholder="Номер телефона" name="phone" onchange="data_change(this.name, this.value)">
+			<button  v-on:click="send_form()">Забронировать</button>
+		</div>
+	</div>
+
+	<script src="js/jquery-3.1.1.min.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/maskedinput.min.js"></script>
+	<script>
+	$(function () {
+        $.ajaxSetup({
+
+            headers: {'KoSiteKey':'test198'}
+        });
+    });
+		        	var vm = new Vue({
+        		el:'#app',
+        		data:{
+        			inn:'',
+        			out: '',
+        			nam: '',
+        			phone:''
+        		},
+        		methods: {
+        			send_form: function(){
+        				let data_in=this.inn;
+        				let data_out=this.out;
+        				let name=this.nam;
+        				let phone=this.phone.replace(/-/g,'');
+        				if (data_in=='' || data_out=='' || name=='' || phone==''){
+        					console.log('Не заполнено')
+        				}else{
+        					if (!this.data_check(data_in,data_out)){
+        						console.log('неверные даты')
+        					}else{
+        						var param=[];
+        					var param2=[];
+        					var param3=[];
+        					var param4=[];
+        					let data=[];
+        					var siteid={
+        						'site_id':'100'
+        					}
+        					var typ={
+        						'type': 'order'
+        					}
+        					param['name']='Имя';
+        					param['value']=name;
+        					data.push(param);
+        					param2['name']='Дата заезда'
+        					param2['value']=data_in;
+        					data.push(param2);
+        					param3['name']='Дата выезда'
+        					param3['value']=data_out;
+        					data.push(param3);
+        					param4['name']='Телефон'
+        					param4['value']=phone;
+        					data.push(param4);
+
+        					console.log(data);
+
+        					 $.ajax({
+                    			url:'https://ko.tour-shop.ru/siteLead',
+                    			contentType: 'application/x-www-form-urlencoded; charset=UTF-8;',
+                    			type: 'POST',
+                    			data: {site_id:siteid, type:typ, data:data}
+                			}).done(function(data){
+        						console.log(data);
+        					})
+        					}
+        			}
+        		},
+        			data_check: function(val, val1){
+        				if (val>val1){
+        					return 0
+        				}else if(val<val1){
+        					return 1
+        				}else{
+        					return 0
+        				}
+        			}
+
+        		},
+        		watch:{
+        			inn: function(val){
+        			},
+        			out: function(val){
+        			},
+        			'nam': function(val) {
+        			},
+        			'phone': function(val) {
+        			}
+        		}
+        	});
+
+		jQuery(function ($) {
+        $.datepicker.regional['ru'] = {
+            closeText: 'Закрыть',
+            prevText: '&#x3c;Пред',
+            nextText: 'След&#x3e;',
+            currentText: 'Сегодня',
+            monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+            monthNamesShort: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+            dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+            dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
+            dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            weekHeader: 'Нед',
+            dateFormat: 'dd.mm.yy',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['ru']);
+    	});
+
+		function data_change(name, value){
+			if (name==='inn')
+			{
+				vm.inn=value;
+			}
+			if (name==='out'){
+				vm.out=value;
+			}
+			if (name==='nam'){
+				vm.nam=value;
+			}
+			if (name==='phone'){
+				vm.phone=value;
+			}
+		}
+		$(function () {
+            $('#datepicker').datepicker($.extend({
+                popup: true,
+                changeYear: true,
+                changeMonth: true,
+            },
+             $.datepicker.regional['ru']
+           ));
+           $('#datepicker1').datepicker($.extend({
+                popup: true,
+                changeYear: true,
+                changeMonth: true,
+            },
+             $.datepicker.regional['ru']
+           ));
+        });
+
+        	$('#phone').mask('+7-999-999-99-99');
+	</script>
+</body>
+</html>
